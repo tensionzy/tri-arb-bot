@@ -102,7 +102,7 @@ class SwapAnalyzer:
 
         # 1. 计算 USDT -> WBNB
         wbnb_received = self.calculate_amount_out(usdt_wbnb_data, self.usdt_amount_in, True)
-        print(f"100 USDT 交换得到 WBNB 数量: {wbnb_received} WBNB")
+        print(f"{self.usdt_amount_in} USDT 交换得到 WBNB 数量: {wbnb_received} WBNB")
 
         # 2. 计算 WBNB -> ETH
         eth_received = self.calculate_amount_out(eth_wbnb_data, wbnb_received, False)

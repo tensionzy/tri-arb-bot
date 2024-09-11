@@ -20,19 +20,20 @@ class PancakeSwapTrade:
         :return: 交易哈希, 交换代币数量
         """
         transaction = contract.functions.swap(
-            recipient=Web3.to_checksum_address(to_address),  # 接收地址
-            zeroForOne=is_token0_in,  # is_token0_in 表示用 token0 兑换 token1, False 表示用 token1 兑换 token0
-            amountSpecified=amount_in,  # 指定输入或输出的代币数量（取决于你是想指定输入数量还是输出数量）
-            sqrtPriceLimitX96=0,  # 设置价格滑点限制，可以根据需要调整
-            data=b''  # 额外的数据，通常为空
-        ).buildTransaction({
+            Web3.to_checksum_address(to_address),   # recipient: 接收地址
+            is_token0_in,                           # zeroForOne: true 表示用 token0 兑换 token1
+            amount_in,                              # amountSpecified: 指定输入代币数量
+            0,                                      # sqrtPriceLimitX96: 设置滑点限制为 0，表示无滑点限制
+            b''                                     # data: 额外数据（通常为空）
+        ).build_transaction({
             'from': self.wallet_address,
             'gas': 250000,
             'gasPrice': self.web3.to_wei('5', 'gwei'),
             'nonce': self.web3.eth.get_transaction_count(Web3.to_checksum_address(self.wallet_address)),
         })
-
-        signed_txn = self.web3.eth.account.signTransaction(transaction, private_key=self.private_key)
+        # 签署交易
+        signed_txn = self.web3.eth.account.sign_transaction(transaction, private_key=self.private_key)
+        # 发送交易
         tx_hash = self.web3.eth.send_raw_transaction(signed_txn.rawTransaction)
 
         # 等待交易收据, 获取交换后的代币数量
